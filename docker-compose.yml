@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Frontend service for React app
+  frontend:
+    build:
+      context: ./frontend  # This tells Docker to use the frontend directory as context
+      dockerfile: Dockerfile  # This points to the Dockerfile inside the frontend folder
+    ports:
+      - "80:80"  # Maps port 80 of the container to port 80 on the host machine
+    environment:
+      - NODE_ENV=production  # Set environment variables, if needed
+    depends_on:
+      - elasticsearch  # Ensures Elasticsearch is available before the frontend starts
+
+  # Backend service (add your backend configuration here)
+  backend:
+    build:
+      context: ./backend  # Adjust the path if your backend is in a different folder
+      dockerfile: Dockerfile  # Backend Dockerfile, adjust if needed
+    ports:
+      - "5000:5000"  # Expose backend port
+    environment:
+      - DB_HOST=your_database_host  # Example environment variable for backend
+      - ELASTICSEARCH_HOST=140.82.43.164:9200  # Connects to the Elasticsearch container
+    depends_on:
+      - elasticsearch  # Ensures Elasticsearch is available before the backend starts
+
+  # Elasticsearch service
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.1  # Specify Elasticsearch image version
+    environment:
+      - discovery.type=single-node  # Configure Elasticsearch for single-node mode
+      - ELASTIC_PASSWORD=WrWx+NlmVFF=W-P9v+jT  # Set the password for the Elastic user
+    ports:
+      - "9200:9200"  # Exposes the Elasticsearch HTTP port
+      - "9300:9300"  # Exposes the transport port for internal communication
+    networks:
+      - siem-net  # Define network for internal communication
+
+  # Optional: other services, such as a database, if you need it
+  # database:
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_PASSWORD: your_password
+  #     POSTGRES_USER: your_user
+  #     POSTGRES_DB: your_db
+  #   ports:
+  #     - "5432:5432"
+
+networks:
+  siem-net:
+    driver: bridge
+

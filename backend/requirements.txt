@@ -1,0 +1,12 @@
+# backend/requirements.txt
+fastapi==0.70.0
+uvicorn==0.15.0
+sqlalchemy==1.4.27
+psycopg2-binary==2.9.2
+pydantic==1.8.2
+passlib==1.7.4
+bcrypt==3.2.0
+python-jose==3.3.0
+python-multipart==0.0.5
+pyjwt==2.3.0
+elasticsearch==7.17.0
